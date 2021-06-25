@@ -1,5 +1,5 @@
 % Import data and convert to array format
-data_table = removevars(readtable('1.csv'), {'Var5_1'});
+data_table = removevars(readtable('1.csv'));
 data_table = [array2table(time2num(table2array(data_table(:,1)),"seconds")) data_table(:,2:4)];
 data = table2array(data_table);
 
