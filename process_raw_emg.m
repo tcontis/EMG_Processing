@@ -27,8 +27,9 @@ function [snrd, filtered_data] = process_raw_emg(data, fs, show_plot)
         
     end 
     
-    hold on
-    plot(ff(out), fft_mag(out), 'o')
+    %hold on
+    %plot(ff(out), fft_mag(out), 'o')
+    
     %% Step 3: Rectify
     data_rect = abs(data_filt);
     
@@ -40,15 +41,19 @@ function [snrd, filtered_data] = process_raw_emg(data, fs, show_plot)
     signal_indices = data_envelope > baseline;
     noise_indices = data_envelope < baseline;
     
-    if show_plot
+    snrd = rms(data_rect(signal_indices))^2/rms(data_rect(noise_indices))^2;
+    filtered_data = data_filt;
     
+    if show_plot
         figure;
         plot(data_rect, 'color', 'cyan')
         hold on
         plot(data_envelope, 'color', 'magenta')
-        yline(baseline)
-        legend(["Rectified Data","Data Envelope","Baseline"]);
+        yline(baseline, 'color', 'black')
+        legend(["Rectified Data","Data Envelope","Baseline"])
+        title("SNR: " + snrd);
+        ylabel("Magnitude (V)")
+        xlabel("Time (s)")
     end
-    snrd = rms(data_rect(signal_indices))^2/rms(data_rect(noise_indices))^2;
-    filtered_data = data_filt;
+    
 end
